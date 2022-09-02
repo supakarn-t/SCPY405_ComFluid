@@ -15,5 +15,5 @@ x = RR.*cos(Theta);
 y = RR.*sin(Theta);
 
 figure(2);
-subplot(211);surf(x, y, phi_RR);view(2);axis image;shading flat;title('Phi_');
-subplot(212);surf(x, y, U_RR);view(2);axis image;shading flat;title('U_');
+subplot(211);surf(x, y, phi_RR);view(2);axis image;shading flat;title('Phi_R_R');
+subplot(212);surf(x, y, U_RR);view(2);axis image;shading flat;title('U_R_R');
