@@ -13,7 +13,7 @@ for i = 1 : N
 %         f(i,2) = 10*abs(yi);
     elseif x(i,1) > 1
         f(i,1) = k_wall*(1-xi); % x-negative force
-        f(i,2) = 10*abs(yi);
+%         f(i,2) = 10*abs(yi);
     end
     
     if x(i,2) < 0
