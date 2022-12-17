@@ -1,5 +1,5 @@
 % Set the number of particles and the size of the simulation domain
-n = 1000;
+n = 100;
 xmin = 0; xmax = 1;
 ymin = 0; ymax = 1;
 
@@ -15,7 +15,7 @@ nsteps = 1000;
 
 % Set the physical properties of the particles
 mass = ones(n,1);
-h = 0.05;
+h = 5;
 rho0 = 1000;
 k = 1000;
 mu = 0.001;
@@ -50,7 +50,13 @@ for t = 1:nsteps
     
     % Compute the forces on each particle
     [fx,fy] = computeForces(x,y,vx,vy,h,rho,P,mu,mass,bc);
+
+    % Plot
+    scatter(x,y);
+    axis equal;xlim([-3 3]);ylim([-3 3]);
+    title("i = "+t)
+    drawnow
 end
 
 % Plot the positions of the particles
-scatter(x,y);
+% scatter(x,y);
