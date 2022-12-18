@@ -6,75 +6,59 @@ clc;clear;close all
 tEnd            = 10;        % time at which simulation ends
 dt              = 0.01;      % timestep
 m               = 0.5;       % particle mass
+m1              = 1.0;       % particle mass
 h               = 0.01;      % smoothing length
 rho_to_p_const  = 0.1;       % equation of state constant
 n_poly          = 5;         % polytropic index
 nu              = 5;         % damping
 k_wall          = 5000;
-
-% tank_width = 10;             % width of the tank in meters
-% tank_height = 5;             % height of the tank in meters
-% tank_depth = 2;              % depth of the tank in meters
-density = 1000;              % density of the water in kg/m^3
-viscosity = 1e-3;            % viscosity of the water in Pa*s
-object_position = [0, 0];    % initial position in x, y coordinates
-object_velocity = [1, 0];    % initial velocity in x, y coordinates
+n_neighbours    = 40;
 
 % Create particles and define their initial locations
+num = 50;
 
-k = 1;
-for px = 0 : 2*h : 0.2
-    for py = 0 : 2*h : 1
-        x(k,:) = [px py];
-        k = k + 1;
-    end
-end
+x1 = sphSquare([0, 0.6, 0.4, 0.3], 2*h);
+x2 = sphSquare([0.04, 0, 0.96, 0.2], 2*h);
+x3 = sphSquare([0, 0, 0.01, 0.6], 2*h);
+% x1 = sphCircle([0.5, 0.8], 0.1, num, 2*h);
+x = [x1; x2; x3];
 
-% num = 100;
-% 
-% x = sphSquare([0.2, 0.5, 0.6, 0.2], 1.75*h);
-% % x = sphCircle([0.5, 0.8], 0.5, num, 2*h);
-% % x = [x1; x0];
-
-% plot(x(:,1), x(:,2), 'r.');
-% hold on;
-% % plot(x(num+1:end,1), x(num+1:end,2), 'b.');
-% plot([-0.01,-0.01,1.01,1.01],[1,-0.01,-0.01,1.01],'r');
-% hold off
-% axis equal;xlim([-0.1 1.1]);ylim([-0.1 1.1]);
-% title("i = "+i)
-% return
-
-N = size(x,1); % Number of particles
+N = size(x,1);
 a = zeros(N,2);
 v = zeros(N,2);
-% K = ceil(tEnd/dt);
-K = 200;
+
+K = 1000;
+
 tic
 
 for i = 1:K
     v = v + a * dt;
     x = x + v * dt;
 
-    % update densities, pressures, accelerations
-    rho = CalDensity(x, m, h);
-%     rho = 1000*ones(N,1);
-    P = rho_to_p_const * rho.^(1 + 1/n_poly);
-%     P = rho*10*h;
+    % update densities, pressures, accelerations    
+%     rho = CalDensity(x, m, h);
+%     P = rho_to_p_const * rho * (1 + 1/n_poly);
+    rho = 1000*ones(N,1);
+    P = rho*10*h;
     a = CalAcceleration(x, v, m, rho, P, nu, h);
-
+    
     % apply contact force by the walls
-    f1 = CalContactForce(x, k_wall);
-    f_contact = f1;
+    f_contact = CalContactForce(x, k_wall);
     a = a + f_contact / m;
 
-    plot(x(:,1), x(:,2), 'r.');
+
+    plot(x(:,1), x(:,2), 'bo');
+%     plot(x(1:num,1), x(1:num,2), 'r.');
     hold on;
-%     plot(x(num+1:end,1), x(num+1:end,2), 'b.');
-    plot([-0.01,-0.01,1.01,1.01],[1,-0.01,-0.01,1.01],'r');
+%     plot(x(num+1:end,1), x(num+1:end,2), 'bo');
+    plot([.41,.41,.43,.43,.41],[1,.65,.65,1,1],'k');
+    plot([.43,.02,.02,.04,.04,.43,.43],[.59,.59,.02,.02,.57,.57,.59],'k');
+    plot([-0.01,-0.01,1.01,1.01,-0.01],[1,-0.01,-0.01,1,1],'k');
     hold off
     axis equal;xlim([-0.1 1.1]);ylim([-0.1 1.1]);
     title("i = "+i)
+%     return
     drawnow
 end
+
 toc
